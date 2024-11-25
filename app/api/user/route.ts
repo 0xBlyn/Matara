@@ -30,8 +30,8 @@ export async function GET(req: Request) {
 
   try {
     // Use a transaction to ensure atomicity
-    const dbUser = await prisma.$transaction(async (prisma) => {
-      let user = await prisma.user.findUnique({
+    const dbUser = await prisma.$transaction(async (prismaClient: { user: { findUnique: (arg0: { where: { telegramId: string; }; }) => any; }; }) => {
+      let user = await prismaClient.user.findUnique({
         where: { telegramId },
       });
 

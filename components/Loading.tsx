@@ -77,8 +77,13 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
   };
 
   useEffect(() => {
-    fetchOrCreateUser();
-  }, []);
+    const initialize = async () => {
+      await fetchOrCreateUser();
+      setCurrentView('someView'); // Example usage
+    };
+
+    initialize();
+  }, [fetchOrCreateUser, setCurrentView]); // Include all dependencies
 
   useEffect(() => {
     if (isDataLoaded) {

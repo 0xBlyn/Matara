@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import gradeffect from '@/images/Group 103 (2).png'
+import { Task, TaskStatus } from '@/utils/types';
 
 export default function Earn() {
 

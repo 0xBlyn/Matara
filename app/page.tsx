@@ -5,10 +5,10 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="max-h-[100vh] flex justify-center items-center">
+    <div className="flex justify-center items-center pt-[15%]">
       <div className="w-full max-w-xl text-white flex flex-col items-center">
-        <div className="w-64 h-64 p-2 mb-8">
-          <div>
+        <div className="w-64 h-64 rounded-full circle-outer p-2 mb-8">
+          <div className="w-full h-full rounded-full circle-inner overflow-hidden relative">
             <Image
               src={mainCharacter}
               alt="Main Character"
@@ -21,8 +21,7 @@ export default function Home() {
             />
           </div>
         </div>
-        
-        <h1 className="text-3xl font-bold">Welcome to Matara</h1>
+                <h1 className="text-3xl font-bold">Welcome to Matara</h1>
         
         <p className="text-xl mb-6">The game is on the <Link href="/clicker" className="underline">Clicker</Link> page.</p>
         

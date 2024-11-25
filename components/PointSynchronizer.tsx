@@ -53,7 +53,7 @@ export function PointSynchronizer() {
             showErrorMessage('Error syncing with server:');
             console.error('Error syncing with server:', error);
         }
-    }, [userTelegramInitData, unsynchronizedPoints, energy, initializeState]);
+    }, [userTelegramInitData, unsynchronizedPoints, energy]);
 
     useEffect(() => {
         // Clear any existing timeout
