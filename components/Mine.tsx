@@ -24,25 +24,25 @@ export default function Mine() {
       <div className='flex flex-col items-center w-full pt-7'>
         <h1 className='heading mb-4'>Ranking</h1>
         <h3 className='text-white text-[14px] font-medium text-center max-w-[70%]'>Strive to be among Top 100,000 members to be eligible for Matara Community Airdrop.</h3>
-        <Link href="/mRanks">
+        <Link href="/mranks">
           <div className="balance pages mt-4">
             See all Ranks <span className='ml-2'><Image src={copyicon} width={50} height={20} alt='' /> </span>
         </div>
         </Link>
       </div>
       <div className="w-full px-[5%] flex items-center justify-center flex-col pt-[7%]">
-      <div className="grid grid-cols-3 gap-4 px-4 w-full mb-2 text-left border-gradient pb-4">
-        <div className="headtext text-left">User Name</div>
+      <div className="grid grid-cols-3 gap-14 w-full mb-2 text-left border-gradient pb-4">
+        <div className="headtext">User Name</div>
         <div className="headtext">Rank</div>
         <div className="headtext">Earnings</div>
       </div>
       
       <div className="h-[400px] overflow-y-auto pt-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
-        <div className="space-y-2 px-4">
+        <div className="space-y-2">
           {leaderboardData.map((item, index) => (
             <div
               key={index}
-              className="grid grid-cols-3 gap-5 pb-4"
+              className="grid grid-cols-3 gap-12 pb-4"
             >
               <div className="users">{item.username}</div>
               <div className="users">{item.rank}</div>

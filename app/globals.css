@@ -362,3 +362,6 @@ body{
   border-image-source: linear-gradient(360deg, #CDCBC8 0%, #88837B 100%);
   border-image-slice: 1;
 }
+.gill{
+  font-family: 'Gill Sans MT', sans-serif;
+}
