@@ -40,6 +40,9 @@ export interface InitialGameState {
   lastEnergyRefillTimestamp: number;
   mineLevelIndex: number;
   profitPerHour: number;
+  isMiningActive: boolean;
+  miningStartTime: number;
+  totalMined: number;
 }
 
 export interface GameState extends InitialGameState {
@@ -62,6 +65,13 @@ export interface GameState extends InitialGameState {
   resetDailyRefills: () => void
   setMineLevelIndex: (mineLevelIndex: number) => void
   upgradeMineLevelIndex: () => void
+  isMiningActive: boolean;
+  setMiningActive: (active: boolean) => void;
+  setMiningStartTime: (time: number) => void;
+  totalMined: number;
+  setTotalMined: (amount: number) => void;
+  matAmount: number;
+  increaseMat: (amount: number) => void;
 }
 
 export const calculateLevel = (points: number): number => {
@@ -116,12 +126,12 @@ export const calculateRestoredEnergy = (multitapLevelIndex: number, previousTime
 
 export const createGameStore = (initialState: InitialGameState) => create<GameState>((set) => ({
   ...initialState,
+  totalMined: 0,
+  setTotalMined: (amount) => set((state) => ({ totalMined: state.totalMined + amount })),
+  profitPerHour: 0.1,
 
   initializeState: (initialState) => set((state) => ({ ...state, ...initialState })),
-  updateLastClickTimestamp: () => set((state) => {
-    // console.log("updateLastClickTimestamp", state.lastClickTimestamp);
-    return { lastClickTimestamp: Date.now() };
-  }),
+  updateLastClickTimestamp: () => set((state) => ({ lastClickTimestamp: Date.now() })),
   setPoints: (points) => set((state) => {
     const newLevelIndex = calculateLevel(points);
     return { points, gameLevelIndex: newLevelIndex };
@@ -134,9 +144,7 @@ export const createGameStore = (initialState: InitialGameState) => create<GameSt
     const newLevelIndex = calculateLevel(newPoints);
     return { points: newPoints, pointsBalance: newPointsBalance, unsynchronizedPoints: newUnsynchronizedPoints, energy: newEnergy, gameLevelIndex: newLevelIndex };
   }),
-  setPointsBalance: (pointsBalance) => set((state) => {
-    return { pointsBalance };
-  }),
+  setPointsBalance: (pointsBalance) => set((state) => ({ pointsBalance })),
   incrementPoints: (amount) => set((state) => {
     const newPoints = state.points + amount;
     const newPointsBalance = state.pointsBalance + amount;
@@ -144,7 +152,7 @@ export const createGameStore = (initialState: InitialGameState) => create<GameSt
     return { points: newPoints, pointsBalance: newPointsBalance, gameLevelIndex: newLevelIndex };
   }),
   decrementPointsBalance: (amount) => set((state) => {
-    const newPointsBalance = Math.max(0, state.pointsBalance - amount); // Ensure points balance don't go negative
+    const newPointsBalance = Math.max(0, state.pointsBalance - amount);
     return { pointsBalance: newPointsBalance };
   }),
   setPointsPerClick: (pointsPerClick) => set({ pointsPerClick }),
@@ -201,6 +209,11 @@ export const createGameStore = (initialState: InitialGameState) => create<GameSt
     }
     return state;
   }),
+  isMiningActive: false,
+  setMiningActive: (active) => set({ isMiningActive: active }),
+  setMiningStartTime: (time) => set({ miningStartTime: time }),
+  matAmount: 0,
+  increaseMat: (amount) => set((state) => ({ matAmount: state.matAmount + amount })),
 }));
 
 export const useGameStore = createGameStore({
@@ -219,5 +232,8 @@ export const useGameStore = createGameStore({
   energyLimitLevelIndex: 0,
   lastEnergyRefillTimestamp: Date.now(),
   mineLevelIndex: 0,
-  profitPerHour: 0,
+  profitPerHour: 0.1,
+  isMiningActive: false,
+  miningStartTime: 0,
+  totalMined: 0,
 });

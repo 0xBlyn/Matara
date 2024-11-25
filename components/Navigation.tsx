@@ -1,14 +1,9 @@
 "use client"
 
 import Image, { StaticImageData } from 'next/image';
-import Mine from '@/icons/Mine';
-import Friends from '@/icons/Friends';
-import Coins from '@/icons/Coins';
-import { iceToken } from '@/images';
-import IceCube from '@/icons/IceCube';
-import Rocket from '@/icons/Rocket';
 import { FC } from 'react';
 import { IconProps } from '@/utils/types';
+import circlelion from '@/images/Group 103.png'
 
 type NavItem = {
     name: string;
@@ -18,11 +13,10 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-    { name: 'Game', icon: IceCube, view: 'game' },
-    { name: 'Mine', icon: Mine, view: 'mine' },
-    { name: 'Friends', icon: Friends, view: 'friends' },
-    { name: 'Earn', icon: Coins, view: 'earn' },
-    { name: 'Airdrop', image: iceToken, view: 'airdrop' },
+    { name: 'Ref', view: 'friends' },
+    { name: 'Rank', view: 'mine' },
+    { name: 'Tasks', view: 'earn' },
+    { name: 'Game',  view: 'game' },
 ];
 
 interface NavigationProps {
@@ -57,31 +51,22 @@ export default function Navigation({ currentView, setCurrentView }: NavigationPr
     }
 
     return (
-        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] max-w-xl bg-[#272a2f] flex justify-around items-center z-50 rounded-3xl text-xs">
+        <div className="absolute z-50 lg:max-w-[300px] bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-full flex justify-around items-center z-50 rounded-3xl text-xs">
+            <div className='-mt-[22%] -ml-[1.5%] absolute flex w-full justify-center'>
+                <Image className=' z-[999999]' src={circlelion} width={117} height={50} alt='' />
+            </div>
             {navItems.map((item) => (
                 <button
                   key={item.name}
                   onClick={() => handleViewChange(item.view)}
-                  className="flex-1"
+                  className="footer-btn flex-[0.245]"
                 >
-                    <div className={`flex flex-col items-center justify-center ${currentView === item.view ? 'text-white bg-[#1c1f24]' : 'text-[#85827d]'} h-16 m-1 p-2 rounded-2xl`}>
-                        <div className="w-8 h-8 relative">
-                            {item.image && (
-                                <div className="w-full h-full relative">
-                                    <Image
-                                        src={item.image}
-                                        alt={item.name}
-                                        width={32}
-                                        height={32}
-                                    />
-                                </div>
-                            )}
-                            {item.icon && <item.icon className="w-full h-full" />}
-                        </div>
-                        <p className="mt-1">{item.name}</p>
+                    <div className={`flex flex-col items-center justify-center h-16`}>
+                        <p className="mt-1 nav-text ">{item.name}</p>
                     </div>
                 </button>
             ))}
         </div>
+        
     );
 }

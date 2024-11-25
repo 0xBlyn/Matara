@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { mainCharacter } from '@/images';
-import IceCube from '@/icons/IceCube';
 import { calculateEnergyLimit, calculateLevel, calculatePointsPerClick, calculateProfitPerHour, GameState, InitialGameState, useGameStore } from '@/utils/game-mechaincs';
 import WebApp from '@twa-dev/sdk';
 
@@ -61,7 +60,10 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
         energyLimitLevelIndex: userData.energyLimitLevelIndex,
         lastEnergyRefillTimestamp: userData.lastEnergyRefillsTimestamp,
         mineLevelIndex: userData.mineLevelIndex,
-        profitPerHour: calculateProfitPerHour(userData.mineLevelIndex)
+        profitPerHour: calculateProfitPerHour(userData.mineLevelIndex),
+        isMiningActive: false,
+        miningStartTime: Date.now(),
+        totalMined: 0
       };
 
       console.log("Initial state: ", initialState);
@@ -111,13 +113,7 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold mb-4">Loading TonIce</h1>
-
-        <div className="flex items-center space-x-2">
-          <IceCube className="w-8 h-8 animate-pulse" />
-          <IceCube className="w-8 h-8 animate-pulse delay-100" />
-          <IceCube className="w-8 h-8 animate-pulse delay-200" />
-        </div>
+        <h1 className="text-3xl font-bold mb-4">Loading Matara</h1>
       </div>
     </div>
   );

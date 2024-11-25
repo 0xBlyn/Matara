@@ -1,114 +1,60 @@
-'use client'
+'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
+import copyicon from '@/images/Group 116.png'
+import gradeffect from '@/images/Group 103 (2).png'
 import Link from 'next/link';
-import Hamster from '@/icons/Hamster';
-import Settings from '@/icons/Settings';
-import { binanceLogo } from '@/images';
-import IceCubes from '@/icons/IceCubes';
-import { calculateMineUpgradeCost, calculateProfitPerHour, useGameStore } from '@/utils/game-mechaincs';
-import Snowflake from '@/icons/Snowflake';
-import TopInfoSection from '@/components/TopInfoSection';
-import { mineUpgradeBaseBenefit, mineUpgradeBasePrice, mineUpgradeBenefitCoefficient, mineUpgradeCostCoefficient } from '@/utils/consts';
-import { formatNumber, showErrorMessage, showSuccessMessage } from '@/utils/ui';
 
 export default function Mine() {
-    const {
-        userTelegramInitData,
-        pointsBalance,
-        profitPerHour,
-        mineLevelIndex,
-        upgradeMineLevelIndex
-    } = useGameStore();
-    const [isLoading, setIsLoading] = useState(false);
 
-    const upgradeCost = calculateMineUpgradeCost(mineLevelIndex);
-    const upgradeIncrease = calculateProfitPerHour(mineLevelIndex + 1) - calculateProfitPerHour(mineLevelIndex);
+    const leaderboardData = [
+        { username: "@geeakpan", rank: "Sergeant", earnings: "50,022" },
+        { username: "@cxsteve", rank: "Sergeant", earnings: "20,022" },
+        { username: "@cdspace", rank: "Sergeant", earnings: "12,022" },
+        { username: "@thechrisjohn", rank: "Warrior", earnings: "2,500" },
+        { username: "@favourani", rank: "Warrior", earnings: "1,022" },
+        { username: "@stixx", rank: "Warrior", earnings: "1,009" },
+        { username: "@akan", rank: "Scout", earnings: "622" },
+        { username: "@edidiongnesu", rank: "Cub Recruit", earnings: "22" },
+        { username: "@dhahi", rank: "Cub Recruit", earnings: "22" },
+      ]
 
-    const handleUpgrade = async () => {
-        if (pointsBalance >= upgradeCost && !isLoading) {
-            setIsLoading(true);
-            try {
-                const response = await fetch('/api/upgrade/mine', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        initData: userTelegramInitData,
-                    }),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to upgrade mine');
-                }
-
-                const result = await response.json();
-
-                console.log("Result from server:", result);
-
-                // Update local state with the new values
-                upgradeMineLevelIndex();
-
-                showSuccessMessage('Mine Upgrade Successful!');
-            } catch (error) {
-                console.error('Error upgrading mine:', error);
-                showErrorMessage('Failed to upgrade mine. Please try again.');
-            } finally {
-                setIsLoading(false);
-            }
-        }
-    };
-
-    return (
-        <div className="bg-black flex justify-center">
-            <div className="w-full bg-black text-white h-screen font-bold flex flex-col max-w-xl">
-                <TopInfoSection />
-
-                <div className="flex-grow mt-4 bg-[#f3ba2f] rounded-t-[48px] relative top-glow z-0">
-                    <div className="absolute top-[2px] left-0 right-0 bottom-0 bg-[#1d2025] rounded-t-[46px] px-4 py-6">
-                        <h1 className="text-2xl text-center mb-6">Upgrade Ice Production</h1>
-
-                        <div className="px-4 mt-4 flex justify-center">
-                            <div className="px-4 py-2 flex items-center space-x-2">
-                                <IceCubes className="w-12 h-12 mx-auto" />
-                                <p className="text-4xl text-white" suppressHydrationWarning >{pointsBalance.toLocaleString()}</p>
-                            </div>
-                        </div>
-
-                        <div className="bg-[#272a2f] rounded-lg p-4 mt-6">
-                            <div className="flex justify-between items-center mb-4">
-                                <p>Current ice per hour:</p>
-                                <p className="text-[#f3ba2f]">{formatNumber(profitPerHour)}</p>
-                            </div>
-                            <div className="flex justify-between items-center mb-4">
-                                <p>Upgrade cost:</p>
-                                <p className="text-[#f3ba2f]">{formatNumber(upgradeCost)}</p>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <p>Ice per hour increase:</p>
-                                <p className="text-[#f3ba2f]">+{formatNumber(upgradeIncrease)}</p>
-                            </div>
-                        </div>
-
-                        <button
-                            onClick={handleUpgrade}
-                            disabled={pointsBalance < upgradeCost || isLoading}
-                            className={`w-full mt-6 py-3 rounded-lg text-center text-white font-bold ${pointsBalance >= upgradeCost && !isLoading ? 'bg-[#f3ba2f]' : 'bg-gray-500 cursor-not-allowed'
-                                } relative`}
-                        >
-                            {isLoading ? (
-                                <div className="flex justify-center items-center">
-                                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                                </div>
-                            ) : (
-                                'Upgrade'
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div>
+      <div className='flex flex-col items-center w-full pt-7'>
+        <h1 className='heading mb-4'>Ranking</h1>
+        <h3 className='text-white text-[14px] font-medium text-center max-w-[70%]'>Strive to be among Top 100,000 members to be eligible for Matara Community Airdrop.</h3>
+        <Link href="/mRanks">
+          <div className="balance pages mt-4">
+            See all Ranks <span className='ml-2'><Image src={copyicon} width={50} height={20} alt='' /> </span>
         </div>
-    );
+        </Link>
+      </div>
+      <div className="w-full px-[5%] flex items-center justify-center flex-col pt-[7%]">
+      <div className="grid grid-cols-3 gap-4 px-4 w-full mb-2 text-left border-gradient pb-4">
+        <div className="headtext text-left">User Name</div>
+        <div className="headtext">Rank</div>
+        <div className="headtext">Earnings</div>
+      </div>
+      
+      <div className="h-[300px] overflow-y-auto pt-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+        <div className="space-y-2 px-4">
+          {leaderboardData.map((item, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-3 gap-5 pb-4"
+            >
+              <div className="users">{item.username}</div>
+              <div className="users">{item.rank}</div>
+              <div className="greens">
+                {item.earnings} $MAT
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <Image className='w-[100vw] -mt-[40%] z-[9] absolute' src={gradeffect} width={400} height={4000} alt='' />
+    </div>
+  );
 }

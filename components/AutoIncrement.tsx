@@ -6,41 +6,33 @@ import { useGameStore } from '@/utils/game-mechaincs';
 
 export function AutoIncrement() {
   const {
-    lastClickTimestamp,
     profitPerHour,
-    pointsPerClick,
-    energy,
-    maxEnergy,
     incrementPoints,
-    incrementEnergy
+    isMiningActive,
+    miningStartTime,
+    setMiningActive,
+    setTotalMined,
   } = useGameStore();
 
-  // Use a ref to store the latest values without causing re-renders
-  const stateRef = useRef({ profitPerHour, pointsPerClick, lastClickTimestamp });
+  const stateRef = useRef({ profitPerHour, isMiningActive, miningStartTime });
 
-  // Update the ref when these values change
   useEffect(() => {
-    stateRef.current = { profitPerHour, pointsPerClick, lastClickTimestamp };
-  }, [profitPerHour, pointsPerClick, lastClickTimestamp]);
+    stateRef.current = { profitPerHour, isMiningActive, miningStartTime };
+  }, [profitPerHour, isMiningActive, miningStartTime]);
 
   const autoIncrement = useCallback(() => {
-    const { profitPerHour, lastClickTimestamp } = stateRef.current;
+    const { profitPerHour, isMiningActive, miningStartTime } = stateRef.current;
     const pointsPerSecond = profitPerHour / 3600;
     const currentTime = Date.now();
 
-    incrementPoints(pointsPerSecond);
-
-    
-    if (!(lastClickTimestamp && ((currentTime - lastClickTimestamp) < 2000))) {
-      // console.log("Auto increment - Current time:", currentTime);
-      // console.log("Auto increment - Last click timestamp:", lastClickTimestamp);
-      // console.log("Auto increment - Time difference:", currentTime - lastClickTimestamp);
-      // console.log("Auto increment - Incrementing energy");
-      incrementEnergy(pointsPerClick);
-    } else {
-      // console.log("Auto increment - Not incrementing energy yet");
+    if (isMiningActive && currentTime - miningStartTime < 24 * 60 * 60 * 1000) {
+      incrementPoints(pointsPerSecond);
+      setTotalMined(pointsPerSecond);
+    } else if (isMiningActive) {
+      setMiningActive(false);
+      console.log("Mining stopped. Please click to restart.");
     }
-  }, [incrementPoints, incrementEnergy]);
+  }, [incrementPoints, setMiningActive, setTotalMined]);
 
   useEffect(() => {
     const interval = setInterval(autoIncrement, 1000);

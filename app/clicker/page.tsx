@@ -16,8 +16,8 @@ import { AutoIncrement } from '@/components/AutoIncrement';
 import { PointSynchronizer } from '@/components/PointSynchronizer';
 
 function ClickerPage() {
-    const [currentView, setCurrentViewState] = useState<string>('loading');
-    const [isInitialized, setIsInitialized] = useState(false);
+    const [currentView, setCurrentViewState] = useState<string>('game');
+    const [isInitialized, setIsInitialized] = useState(true);
 
     const setCurrentView = useCallback((newView: string) => {
         console.log('Changing view to:', newView);
@@ -25,24 +25,9 @@ function ClickerPage() {
     }, []);
 
     const renderCurrentView = useCallback(() => {
-        if (!isInitialized) {
-            return <LoadingScreen
-                setIsInitialized={setIsInitialized}
-                setCurrentView={setCurrentView}
-            />;
-        }
-
         switch (currentView) {
             case 'game':
-                return <Game
-                    currentView={currentView}
-                    setCurrentView={setCurrentView}
-                />;
-            case 'boost':
-                return <Boost
-                    currentView={currentView}
-                    setCurrentView={setCurrentView}
-                />
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
             case 'mine':
                 return <Mine />;
             case 'friends':
@@ -51,32 +36,25 @@ function ClickerPage() {
                 return <Earn />;
             case 'airdrop':
                 return <Airdrop />;
+            case 'boost':
+                return <Boost currentView={currentView} setCurrentView={setCurrentView} />;
             default:
-                return <Game
-                    currentView={currentView}
-                    setCurrentView={setCurrentView}
-                />;
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
         }
-    }, [currentView, isInitialized]);
-
-    console.log('ClickerPage rendering. Current state:', { currentView, isInitialized });
+    }, [currentView, setCurrentView]);
 
     return (
-        <div className="bg-black min-h-screen text-white">
-            <ToastContainer />
-            {
-                isInitialized &&
+        <div className="h-screen flex flex-col">
+            <div className="flex-grow overflow-y-auto">
+                {renderCurrentView()}
+            </div>
+            {isInitialized && currentView !== 'loading' && (
                 <>
+                    <Navigation currentView={currentView} setCurrentView={setCurrentView} />
                     <AutoIncrement />
                     <PointSynchronizer />
+                    <ToastContainer />
                 </>
-            }
-            {renderCurrentView()}
-            {isInitialized && currentView !== 'loading' && (
-                <Navigation
-                    currentView={currentView}
-                    setCurrentView={setCurrentView}
-                />
             )}
         </div>
     );

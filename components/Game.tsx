@@ -1,175 +1,130 @@
 'use client'
 
+import React from 'react';
 import { useEffect, useState } from 'react';
+import { useGameStore } from '@/utils/game-mechaincs';
 import Image from 'next/image';
-import Hamster from '@/icons/Hamster';
-import Info from '@/icons/Info';
-import Settings from '@/icons/Settings';
-import { binanceLogo, dailyCipher, dailyCombo, dailyReward, dollarCoin, lightning, mainCharacter } from '@/images';
-import IceCube from '@/icons/IceCube';
-import IceCubes from '@/icons/IceCubes';
-import GasStation from '@/icons/GasStation';
-import Rocket from '@/icons/Rocket';
-import Energy from '@/icons/Energy';
-import Link from 'next/link';
-import { levelMinPoints, levelNames, useGameStore } from '@/utils/game-mechaincs';
-import Snowflake from '@/icons/Snowflake';
-import TopInfoSection from '@/components/TopInfoSection';
-import { AutoIncrement } from './AutoIncrement';
-import { PointSynchronizer } from './PointSynchronizer';
+import activeArrow from '@/images/active.png';
+import inactiveArrow from '@/images/inactive.png';
+import lion from '@/images/image 25.png';
+import hourglass from '@/images/image 27.png';
+import gradientBackground from '@/images/Group 113.png'
 
 interface GameProps {
   currentView: string;
-  setCurrentView: (view: string) => void;
+  setCurrentView: (newView: string) => void;
 }
 
 export default function Game({ currentView, setCurrentView }: GameProps) {
-
-  const handleViewChange = (view: string) => {
-    console.log('Attempting to change view to:', view);
-    if (typeof setCurrentView === 'function') {
-      try {
-        setCurrentView(view);
-        console.log('View change successful');
-      } catch (error) {
-        console.error('Error occurred while changing view:', error);
-      }
-    } else {
-      console.error('setCurrentView is not a function:', setCurrentView);
-    }
-  };
-
-  const [clicks, setClicks] = useState<{ id: number, x: number, y: number }[]>([]);
-
   const {
-    points,
-    pointsBalance,
-    pointsPerClick,
-    energy,
-    maxEnergy,
-    gameLevelIndex,
-    clickTriggered,
-    updateLastClickTimestamp,
+    isMiningActive,
+    miningStartTime,
+    setMiningActive,
+    setMiningStartTime,
+    profitPerHour,
+    totalMined,
   } = useGameStore();
 
-  const calculateTimeLeft = (targetHour: number) => {
-    const now = new Date();
-    const target = new Date(now);
-    target.setUTCHours(targetHour, 0, 0, 0);
+  const [timeLeft, setTimeLeft] = useState('');
+  const [arrowDirection, setArrowDirection] = useState('up');
+  const [showPopup, setShowPopup] = useState(false);
+  const earningsPerSecond = 0.0002;
 
-    if (now.getUTCHours() >= targetHour) {
-      target.setUTCDate(target.getUTCDate() + 1);
+  useEffect(() => {
+    if (isMiningActive) {
+      const interval = setInterval(() => {
+        const currentTime = Date.now();
+        const timeElapsed = currentTime - miningStartTime;
+        const timeRemaining = 24 * 60 * 60 * 1000 - timeElapsed;
+        const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        setTimeLeft(`${hours}hrs ${minutes}mins`);
+      }, 1000);
+
+      return () => clearInterval(interval);
     }
+  }, [isMiningActive, miningStartTime]);
 
-    const diff = target.getTime() - now.getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    const paddedHours = hours.toString().padStart(2, '0');
-    const paddedMinutes = minutes.toString().padStart(2, '0');
-
-    return `${paddedHours}:${paddedMinutes}`;
-  };
-
-  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    card.style.transform = `perspective(1000px) rotateX(${-y / 10}deg) rotateY(${x / 10}deg)`;
-    setTimeout(() => {
-      card.style.transform = '';
-    }, 100);
-    updateLastClickTimestamp();
-    clickTriggered();
-    setClicks([...clicks, { id: Date.now(), x: e.pageX, y: e.pageY }]);
-  };
-
-  const handleAnimationEnd = (id: number) => {
-    setClicks((prevClicks) => prevClicks.filter(click => click.id !== id));
-  };
-
-  const calculateProgress = () => {
-    if (gameLevelIndex >= levelNames.length - 1) {
-      return 100;
+  const handleStartMining = () => {
+    if (!isMiningActive) {
+      setMiningActive(true);
+      setMiningStartTime(Date.now());
+      setArrowDirection('up');
     }
-    const currentLevelMin = levelMinPoints[gameLevelIndex];
-    const nextLevelMin = levelMinPoints[gameLevelIndex + 1];
-    const progress = ((points - currentLevelMin) / (nextLevelMin - currentLevelMin)) * 100;
-    return Math.min(progress, 100);
+  };
+
+  useEffect(() => {
+    if (!isMiningActive) {
+      setArrowDirection('down');
+    }
+  }, [isMiningActive]);
+
+  const handleButtonClick = () => {
+    if (isMiningActive) {
+      setShowPopup(true);
+    } else {
+      handleStartMining();
+    }
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
+  const handleMining = () => {
+    const minedAmount = 100; // Example amount mined
+    useGameStore.getState().increaseMat(minedAmount); // Update the matAmount in the store
   };
 
   return (
-    <div className="bg-black flex justify-center">
-      <div className="w-full bg-black text-white h-screen font-bold flex flex-col max-w-xl">
-        <TopInfoSection />
-
-        <div className="flex-grow mt-4 bg-[#f3ba2f] rounded-t-[48px] relative top-glow z-0">
-          <div className="absolute top-[2px] left-0 right-0 bottom-0 bg-[#1d2025] rounded-t-[46px]">
-
-            <div className="px-4 mt-4 flex justify-center">
-              <div className="px-4 py-2 flex items-center space-x-2">
-                <IceCubes className="w-12 h-12 mx-auto" />
-                <p className="text-4xl text-white" suppressHydrationWarning >{pointsBalance.toLocaleString()}</p>
-              </div>
-            </div>
-
-            <div className="flex justify-center gap-2">
-              <p>{levelNames[gameLevelIndex]}</p>
-              <p className="text-[#95908a]" >&#8226;</p>
-              <p>{gameLevelIndex + 1} <span className="text-[#95908a]">/ {levelNames.length}</span></p>
-            </div>
-
-            <div className="px-4 mt-4 flex justify-center">
-              <div
-                className="w-80 h-80 p-4 rounded-full circle-outer"
-                onClick={handleCardClick}
-              >
-                <div className="w-full h-full rounded-full circle-inner overflow-hidden relative">
-                  <Image
-                    src={mainCharacter}
-                    alt="Main Character"
-                    fill
-                    style={{
-                      objectFit: 'cover',
-                      objectPosition: 'center',
-                      transform: 'scale(1.05) translateY(10%)'
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-between px-4 mt-4">
-              <p className="flex justify-center items-center gap-1"><Image src={lightning} alt="Exchange" width={40} height={40} /><span className="flex flex-col"><span className="text-xl font-bold">{energy}</span><span className="text-base font-medium">/ {maxEnergy}</span></span></p>
-              <button onClick={() => handleViewChange("boost")} className="flex justify-center items-center gap-1"><Rocket size={40} /><span className="text-xl">Boost</span></button>
-            </div>
-
-            <div className="w-full px-4 text-sm mt-2">
-              <div className="flex items-center mt-1 border-2 border-[#43433b] rounded-full">
-                <div className="w-full h-3 bg-[#43433b]/[0.6] rounded-full">
-                  <div className="progress-gradient h-3 rounded-full" style={{ width: `${calculateProgress()}%` }}></div>
-                </div>
-              </div>
-            </div>
-
+    <div className="relative max-h-[90vh] text-white flex flex-col items-center">
+      <div className="flex items-center justify-center w-full px-[10%] lg:max-w-[300px]">
+        <div className="text-2xl font-bold text-right mt-7">
+          <p className='text-[#4BF693] text-xs font-semibold'>Mining Mode</p>
+          <p
+            className="font-black leading-none text-2xl  text-transparent bg-clip-text"
+            style={{
+              backgroundImage: 'linear-gradient(92.78deg, #44F58E 12.41%, #FAFAFA 81.56%)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text'
+            }}
+          >
+            {totalMined.toFixed(3)} <span className='text-semibold'>$</span>MAT
+          </p>
+        </div>
+        <div className="relative flex items-center justify-center w-full lg:mx-0 -mx-[8%]">
+          <div className="relative justify-center">
+            <Image src={hourglass} alt="Hourglass" width={100} height={100} />
+            <Image
+              src={isMiningActive ? activeArrow : inactiveArrow}
+              alt="Mining Status Arrow"
+              width={50}
+              height={50}
+              className="absolute top-0 mt-6 left-0 transform translate-x-1/2 translate-y-1/2 z-10"
+            />
           </div>
         </div>
-      </div>
-
-      {clicks.map((click) => (
-        <div
-          key={click.id}
-          className="absolute text-5xl font-bold opacity-0 text-white pointer-events-none flex justify-center"
-          style={{
-            top: `${click.y - 42}px`,
-            left: `${click.x - 28}px`,
-            animation: `float 1s ease-out`
-          }}
-          onAnimationEnd={() => handleAnimationEnd(click.id)}
-        >
-          {pointsPerClick}<IceCube className="w-12 h-12 mx-auto" />
+        <div className="text-xl mt-7">
+          <p className='text-[#FFBF49] text-xs font-semibold'>Earning Rate</p>
+          <p className='font-semibold text-2xl leading-none'>{earningsPerSecond.toFixed(4)} <span className='text-lg leading-none font-base'>$MAT/Sec</span></p>
         </div>
-      ))}
+      </div>
+      <p className="mb-3 z-[9999] -mt-2 text-transparent bg-clip-text" style={{ backgroundImage: ' linear-gradient(90deg, #FFD683 0%, #FFB948 100%)' }}>
+        Mining Resets in <span style={{ color: '#fff' }}>{timeLeft}</span>
+      </p>
+      <button
+        onClick={handleButtonClick}
+        className="button lg:max-w-[200px] lg:-mt-0"
+        disabled={isMiningActive}
+      >
+        Claim Daily Matara
+      </button>
+      <div className='relative'>
+        <Image className='w-full flex  bottom-0 lg:max-w-[300px]' src={lion} alt="Main Character" width={100} height={100} />
+      </div>
+      <div>
+        <Image className='w-full absolute mt-[-60vh] left-0' src={gradientBackground} width={400} height={500} alt='' />
+      </div>
     </div>
-  )
+  );
 }

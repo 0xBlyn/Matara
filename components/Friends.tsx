@@ -1,6 +1,129 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react';
+import { useGameStore } from '@/utils/game-mechaincs';
+import { showErrorMessage, showSuccessMessage } from '@/utils/ui';
+import Image from 'next/image';
+import gradeffect from '@/images/Group 103 (2).png'
+import copyicon from '@/images/Vector.png'
+
+interface Referral {
+  telegramId: string;
+  points: number;
+}
+
+export default function Friends() {
+  const { userTelegramInitData } = useGameStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [buttonText, setButtonText] = useState("Invite a friend");
+  // const [referrals, setReferrals] = useState<Referral[]>([]);
+  const [isLoadingReferrals, setIsLoadingReferrals] = useState(true);
+
+  const referrals = [
+    { username: "@cxsteve", earnings: "+$2.5 $MAT" },
+    { username: "@cdspace", earnings: "+$2.5 $MAT" },
+    { username: "@geeakpan", earnings: "+$2.5 $MAT" },
+    { username: "@favourani", earnings: "+$2.5 $MAT" },
+    { username: "@edidiongnesu", earnings: "+$2.5 $MAT" },
+    { username: "@stlxx", earnings: "+$2.5 $MAT" },
+    { username: "@cxsteve", earnings: "+$2.5 $MAT" },
+    { username: "@cdspace", earnings: "+$2.5 $MAT" },
+    { username: "@geeakpan", earnings: "+$2.5 $MAT" },
+    { username: "@favourani", earnings: "+$2.5 $MAT" },
+    { username: "@edidiongnesu", earnings: "+$2.5 $MAT" },
+    { username: "@stlxx", earnings: "+$2.5 $MAT" },
+
+  ]
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000000000) return `${(num / 1000000000).toFixed(2)}B`;
+    if (num >= 1000000) return `${(num / 1000000).toFixed(2)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(2)}K`;
+    return num.toString();
+  };
+
+  /*const fetchReferrals = useCallback(async () => {
+    setIsLoadingReferrals(true);
+    // Simulate fetching referrals
+    setTimeout(() => {
+      setReferrals([]); // Start with no referrals
+      setIsLoadingReferrals(false);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    fetchReferrals();
+  }, [fetchReferrals]);
+
+  const handleDemoAddFriend = () => {
+    const demoFriends = [
+      { telegramId: '@demo1', points: 2500 },
+      { telegramId: '@demo2', points: 2500 },
+      { telegramId: '@demo3', points: 2500 },
+    ];
+    setReferrals(demoFriends);
+    showSuccessMessage("Demo friends added!");
+  };*/
+
+  const handleInviteButtonClick = useCallback(() => {
+    const inviteLink = `https://t.me/your_bot_username/start?startapp=kentId`;
+    navigator.clipboard.writeText(inviteLink)
+      .then(() => {
+        setButtonText("Link copied");
+        showSuccessMessage("Invite link copied to clipboard!");
+
+        setTimeout(() => {
+          setButtonText("Invite a friend");
+        }, 2000);
+      })
+      .catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+  }, []);
+
+  return (
+    <div>
+      <div className='flex flex-col items-center w-full pt-7'>
+        <h1 className='heading mb-6'>Referrals</h1>
+        <div className="balance pages">
+          Invite Friends <span className='ml-2'><Image src={copyicon} width={20} height={20} alt='' /> </span>
+        </div>
+        <button
+      className="relative inline-flex items-center justify-center px-5 py-3 min-w-[60%] text-black text-lg font-extrabold font-['Gill_Sans'] leading-[18px] rounded-lg before:absolute before:inset-0 before:rounded-lg before:p-[3px] before:bg-gradient-to-r before:from-[#FFD683] before:to-[#FFB948] before:-z-10 after:absolute after:inset-[3px] after:rounded-[5px] after:bg-gradient-to-r after:from-[#FFB939] after:to-[#FFD683] after:-z-10 shadow-[0px_0px_40px_0px_#FFC36940] hover:opacity-90 transition-opacity my-3">Share Story</button>
+        <h3 className='text-white text-[14px] font-medium text-center'>Share story to earn more Matara<br/> Tokens ($MAT)</h3>
+      </div>
+      <div className="w-full max-w-md px-[5%] pt-7">
+      <div className="flex justify-between items-center border-gradient text-[15px] pb-4 mb-2 px-4">
+        <div className="headtext">User Name</div>
+        <div className="headtext">Earnings</div>
+      </div>
+      <div className="h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent ">
+        <div className="space-y-3 px-4">
+          {referrals.map((referral, index) => (
+            <div
+              key={index}
+              className="rows"
+            >
+              <div className="users">{referral.username}</div>
+              <div className="greens">{referral.earnings}</div>
+            </div>
+          ))}
+        </div>
+        
+      </div>
+    </div>
+    <Image className='w-[100vw] -mt-[27%] z-[9] absolute' src={gradeffect} width={400} height={4000} alt='' />
+    </div>
+  );
+}
+
+
+
+
+
+/*'use client'
+
+import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import IceCubes from '@/icons/IceCubes';
@@ -184,3 +307,5 @@ export default function Friends() {
     </div>
   );
 }
+
+*/
