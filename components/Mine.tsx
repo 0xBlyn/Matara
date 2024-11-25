@@ -37,7 +37,7 @@ export default function Mine() {
         <div className="headtext">Earnings</div>
       </div>
       
-      <div className="h-[300px] overflow-y-auto pt-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+      <div className="h-[400px] overflow-y-auto pt-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
         <div className="space-y-2 px-4">
           {leaderboardData.map((item, index) => (
             <div
@@ -54,7 +54,7 @@ export default function Mine() {
         </div>
       </div>
     </div>
-    <Image className='w-[100vw] -mt-[40%] z-[9] absolute' src={gradeffect} width={400} height={4000} alt='' />
+    <Image className='bottom-[64px] fixed' src={gradeffect} width={400} height={4000} alt='' />
     </div>
   );
 }

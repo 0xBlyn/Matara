@@ -35,7 +35,7 @@ export default function Earn() {
         return (
           <button
             onClick={onClick}
-            className="px-4 py-1 text-sm font-medium rounded bg-[#FFB939] text-black hover:bg-[#FFB939]/90 transition-colors"
+            className="connect-btn text-black min-w-full"
           >
             Perform Task
           </button>
@@ -44,7 +44,7 @@ export default function Earn() {
         return (
           <button
             onClick={onClick}
-            className="px-4 py-1 text-sm font-medium rounded bg-[#22C55E] text-black hover:bg-[#22C55E]/90 transition-colors"
+            className="balance text-[5px]"
           >
             Claim Reward
           </button>
@@ -53,7 +53,7 @@ export default function Earn() {
         return (
           <button
             disabled
-            className="px-4 py-1 text-sm font-medium rounded bg-gray-600 text-gray-300 cursor-not-allowed"
+            className="balance min-w-full"
           >
             Completed
           </button>
@@ -67,23 +67,23 @@ export default function Earn() {
         <h1 className='heading mb-4'>Social Task</h1>
         <h3 className='text-white text-[14px] font-medium text-center max-w-[70%]'>Perform Social Tasks to earn more Matara Tokens ($MAT) and grow your rank.</h3>
       </div>
-      <div className="w-full max-w-md">
-      <div className="grid grid-cols-3 gap-4 px-4 mb-2">
-        <div className="text-[#4A5568] text-sm font-medium">Task</div>
-        <div className="text-[#4A5568] text-sm font-medium">Earnings</div>
-        <div className="text-[#4A5568] text-sm font-medium">Action</div>
+      <div className="w-full pt-[12%] px-[5%]">
+      <div className="grid grid-cols-3 gap-4 px-4 mb-2 mb-2 text-left border-gradient pb-4">
+        <div className="headtext">Task</div>
+        <div className="headtext">Earnings</div>
+        <div className="headtext">Action</div>
       </div>
       
-      <div className="h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+      <div className="h-[500px] pt-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
         <div className="space-y-4 px-4">
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="grid grid-cols-3 gap-4 border-b border-[#1A202C] pb-4"
+              className="grid grid-cols-3 gap-2 items-center pb-1"
             >
-              <div className="text-[#A0AEC0] text-sm">{task.description}</div>
-              <div className="text-[#22C55E] text-sm font-medium">{task.earnings}</div>
-              <div>
+              <div className="users">{task.description}</div>
+              <div className="greens items-center flex justify-center w-full -ml-[15%] text-center">{task.earnings}</div>
+              <div className='w-[30vw]'>
                 {getActionButton(task.status, () => handleAction(task.id))}
               </div>
             </div>
@@ -91,7 +91,7 @@ export default function Earn() {
         </div>
       </div>
       </div>
-      <Image className='w-[100vw] -mt-[27%] z-[9] absolute' src={gradeffect} width={400} height={4000} alt='' />
+      <Image className='bottom-[64px] fixed' src={gradeffect} width={400} height={4000} alt='' />
     </div>
   );
 }

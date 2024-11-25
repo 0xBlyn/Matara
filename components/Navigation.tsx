@@ -51,9 +51,9 @@ export default function Navigation({ currentView, setCurrentView }: NavigationPr
     }
 
     return (
-        <div className="absolute z-50 lg:max-w-[300px] bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-full flex justify-around items-center z-50 rounded-3xl text-xs">
+        <div className="fixed z-50 lg:max-w-[300px] bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-full flex justify-around items-center z-50 rounded-3xl text-xs">
             <div className='-mt-[22%] -ml-[1.5%] absolute flex w-full justify-center'>
-                <Image className=' z-[999999]' src={circlelion} width={117} height={50} alt='' />
+                <Image className=' z-[999999]' src={circlelion} width={130} height={50} alt='' />
             </div>
             {navItems.map((item) => (
                 <button

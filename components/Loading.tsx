@@ -101,7 +101,7 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
   }, [isDataLoaded, setIsInitialized]);
 
   return (
-    <div className="bg-[#1d2025] flex justify-center items-center h-screen">
+    <div className="bg-[#1d2025] flex justify-center w-full items-center h-screen">
       <div className="w-full max-w-xl text-white flex flex-col items-center">
         <div className="w-64 h-64 rounded-full circle-outer p-2 mb-8">
           <div className="w-full h-full rounded-full circle-inner overflow-hidden relative">

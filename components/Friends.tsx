@@ -97,7 +97,7 @@ export default function Friends() {
         <div className="headtext">User Name</div>
         <div className="headtext">Earnings</div>
       </div>
-      <div className="h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent ">
+      <div className="h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent ">
         <div className="space-y-3 px-4">
           {referrals.map((referral, index) => (
             <div
@@ -112,7 +112,7 @@ export default function Friends() {
         
       </div>
     </div>
-    <Image className='w-[100vw] -mt-[27%] z-[9] absolute' src={gradeffect} width={400} height={4000} alt='' />
+    <Image className='bottom-[64px] fixed' src={gradeffect} width={400} height={4000} alt='' />
     </div>
   );
 }

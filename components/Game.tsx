@@ -77,7 +77,7 @@ export default function Game({ currentView, setCurrentView }: GameProps) {
   };
 
   return (
-    <div className="relative max-h-[90vh] text-white flex flex-col items-center">
+    <div className="relative max-h-[80vh] text-white flex flex-col items-center">
       <div className="flex items-center justify-center w-full px-[10%] lg:max-w-[300px]">
         <div className="text-2xl font-bold text-right mt-7">
           <p className='text-[#4BF693] text-xs font-semibold'>Mining Mode</p>
@@ -94,13 +94,13 @@ export default function Game({ currentView, setCurrentView }: GameProps) {
         </div>
         <div className="relative flex items-center justify-center w-full lg:mx-0 -mx-[8%]">
           <div className="relative justify-center">
-            <Image src={hourglass} alt="Hourglass" width={100} height={100} />
+            <Image className='sm:w-[120px]' src={hourglass} alt="Hourglass" width={80} height={80} />
             <Image
               src={isMiningActive ? activeArrow : inactiveArrow}
               alt="Mining Status Arrow"
-              width={50}
-              height={50}
-              className="absolute top-0 mt-6 left-0 transform translate-x-1/2 translate-y-1/2 z-10"
+              width={40}
+              height={40}
+              className="absolute sm:w-[60px] top-0 mt-6 left-0 transform translate-x-1/2 translate-y-1/2 z-10"
             />
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function Game({ currentView, setCurrentView }: GameProps) {
           <p className='font-semibold text-2xl leading-none'>{earningsPerSecond.toFixed(4)} <span className='text-lg leading-none font-base'>$MAT/Sec</span></p>
         </div>
       </div>
-      <p className="mb-3 z-[9999] -mt-2 text-transparent bg-clip-text" style={{ backgroundImage: ' linear-gradient(90deg, #FFD683 0%, #FFB948 100%)' }}>
+      <p className="mb-3 sm:py-1 pt-1 z-[9999] -mt-2 text-transparent bg-clip-text" style={{ backgroundImage: ' linear-gradient(90deg, #FFD683 0%, #FFB948 100%)' }}>
         Mining Resets in <span style={{ color: '#fff' }}>{timeLeft}</span>
       </p>
       <button
@@ -119,11 +119,11 @@ export default function Game({ currentView, setCurrentView }: GameProps) {
       >
         Claim Daily Matara
       </button>
-      <div className='relative'>
-        <Image className='w-full flex  bottom-0 lg:max-w-[300px]' src={lion} alt="Main Character" width={100} height={100} />
-      </div>
       <div>
-        <Image className='w-full absolute mt-[-60vh] left-0' src={gradientBackground} width={400} height={500} alt='' />
+        <Image className='w-full left-0 -z-[9999999]' src={gradientBackground} width={400} height={500} alt='' />
+      </div>
+      <div className='fixed bottom-0'>
+        <Image className='min-w-[100vw] flex  bottom-0 lg:max-w-[300px]' src={lion} alt="Main Character" width={100} height={100} />
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ export default function TopInfoSection() {
     const { matAmount } = useGameStore();
 
     return (
-        <div className="px-4 flex mt-4 justify-between items-center">
+        <div className="px-4 lg:max-w-[500px] sm:py-[3%] flex mt-4 justify-between items-center">
             <div className="flex items-center">
                 <Link href='/clicker'>
                     <Image src={badge} width={40} height={40} alt='' />
