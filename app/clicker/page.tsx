@@ -48,7 +48,6 @@ const ClickerPage: React.FC = () => {
     // Example of checking for window before using it
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            // Code that depends on the window object
             console.log('Window is defined, running client-side code.');
             // You can add any window-dependent code here
         }
