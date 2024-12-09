@@ -1,6 +1,3 @@
-// app/clicker/page.tsx
-'use client'
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { ToastContainer } from 'react-toastify';
 import LoadingScreen from '@/components/Loading';
@@ -45,6 +42,15 @@ const ClickerPage: React.FC = () => {
                 return <Game currentView={currentView} setCurrentView={setCurrentView} />;
         }
     }, [currentView, isInitialized]);
+
+    // Example of checking for window before using it
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            // Code that depends on the window object
+            console.log('Window is defined, running client-side code.');
+            // You can add any window-dependent code here
+        }
+    }, []);
 
     return (
         <div className="min-h-screen text-white">

@@ -22,7 +22,326 @@
 
 # debug
 npm-debug.log*
+yarn-debug.log*# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
 yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.tsimport React, { useState, useEffect, useCallback } from 'react';
+import { ToastContainer } from 'react-toastify';
+import LoadingScreen from '@/components/Loading';
+import Game from '@/components/Game';
+import Mine from '@/components/Mine';
+import Friends from '@/components/Friends';
+import Earn from '@/components/Earn';
+import Airdrop from '@/components/Airdrop';
+import Boost from '@/components/Boost';
+import Navigation from '@/components/Navigation';
+import { AutoIncrement } from '@/components/AutoIncrement';
+import { PointSynchronizer } from '@/components/PointSynchronizer';
+
+const ClickerPage: React.FC = () => {
+    const [currentView, setCurrentViewState] = useState<string>('loading');
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    const setCurrentView = useCallback((newView: string) => {
+        console.log('Changing view to:', newView);
+        setCurrentViewState(newView);
+    }, []);
+
+    const renderCurrentView = useCallback(() => {
+        if (!isInitialized) {
+            return <LoadingScreen setIsInitialized={setIsInitialized} setCurrentView={setCurrentView} />;
+        }
+
+        switch (currentView) {
+            case 'game':
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
+            case 'boost':
+                return <Boost currentView={currentView} setCurrentView={setCurrentView} />;
+            case 'mine':
+                return <Mine />;
+            case 'friends':
+                return <Friends />;
+            case 'earn':
+                return <Earn />;
+            case 'airdrop':
+                return <Airdrop />;
+            default:
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
+        }
+    }, [currentView, isInitialized]);
+
+    // Example of checking for window before using it
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            // Code that depends on the window object
+            console.log('Window is defined, running client-side code.');
+            // You can add any window-dependent code here
+        }
+    }, []);
+
+    return (
+        <div className="min-h-screen text-white">
+            <ToastContainer />
+            {isInitialized && (
+                <>
+                    <AutoIncrement />
+                    <PointSynchronizer />
+                </>
+            )}
+            {renderCurrentView()}
+            {isInitialized && currentView !== 'loading' && (
+                <Navigation currentView={currentView} setCurrentView={setCurrentView} />
+            )}
+        </div>
+    );
+};
+
+export default ClickerPage;import React, { useState, useEffect, useCallback } from 'react';
+import { ToastContainer } from 'react-toastify';
+import LoadingScreen from '@/components/Loading';
+import Game from '@/components/Game';
+import Mine from '@/components/Mine';
+import Friends from '@/components/Friends';
+import Earn from '@/components/Earn';
+import Airdrop from '@/components/Airdrop';
+import Boost from '@/components/Boost';
+import Navigation from '@/components/Navigation';
+import { AutoIncrement } from '@/components/AutoIncrement';
+import { PointSynchronizer } from '@/components/PointSynchronizer';
+
+const ClickerPage: React.FC = () => {
+    const [currentView, setCurrentViewState] = useState<string>('loading');
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    const setCurrentView = useCallback((newView: string) => {
+        console.log('Changing view to:', newView);
+        setCurrentViewState(newView);
+    }, []);
+
+    const renderCurrentView = useCallback(() => {
+        if (!isInitialized) {
+            return <LoadingScreen setIsInitialized={setIsInitialized} setCurrentView={setCurrentView} />;
+        }
+
+        switch (currentView) {
+            case 'game':
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
+            case 'boost':
+                return <Boost currentView={currentView} setCurrentView={setCurrentView} />;
+            case 'mine':
+                return <Mine />;
+            case 'friends':
+                return <Friends />;
+            case 'earn':
+                return <Earn />;
+            case 'airdrop':
+                return <Airdrop />;
+            default:
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
+        }
+    }, [currentView, isInitialized]);
+
+    // Example of checking for window before using it
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            // Code that depends on the window object
+            console.log('Window is defined, running client-side code.');
+            // You can add any window-dependent code here
+        }
+    }, []);
+
+    return (
+        <div className="min-h-screen text-white">
+            <ToastContainer />
+            {isInitialized && (
+                <>
+                    <AutoIncrement />
+                    <PointSynchronizer />
+                </>
+            )}
+            {renderCurrentView()}
+            {isInitialized && currentView !== 'loading' && (
+                <Navigation currentView={currentView} setCurrentView={setCurrentView} />
+            )}
+        </div>
+    );
+};
+
+export default ClickerPage;import React, { useState, useEffect, useCallback } from 'react';
+import { ToastContainer } from 'react-toastify';
+import LoadingScreen from '@/components/Loading';
+import Game from '@/components/Game';
+import Mine from '@/components/Mine';
+import Friends from '@/components/Friends';
+import Earn from '@/components/Earn';
+import Airdrop from '@/components/Airdrop';
+import Boost from '@/components/Boost';
+import Navigation from '@/components/Navigation';
+import { AutoIncrement } from '@/components/AutoIncrement';
+import { PointSynchronizer } from '@/components/PointSynchronizer';
+
+const ClickerPage: React.FC = () => {
+    const [currentView, setCurrentViewState] = useState<string>('loading');
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    const setCurrentView = useCallback((newView: string) => {
+        console.log('Changing view to:', newView);
+        setCurrentViewState(newView);
+    }, []);
+
+    const renderCurrentView = useCallback(() => {
+        if (!isInitialized) {
+            return <LoadingScreen setIsInitialized={setIsInitialized} setCurrentView={setCurrentView} />;
+        }
+
+        switch (currentView) {
+            case 'game':
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
+            case 'boost':
+                return <Boost currentView={currentView} setCurrentView={setCurrentView} />;
+            case 'mine':
+                return <Mine />;
+            case 'friends':
+                return <Friends />;
+            case 'earn':
+                return <Earn />;
+            case 'airdrop':
+                return <Airdrop />;
+            default:
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
+        }
+    }, [currentView, isInitialized]);
+
+    // Example of checking for window before using it
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            // Code that depends on the window object
+            console.log('Window is defined, running client-side code.');
+            // You can add any window-dependent code here
+        }
+    }, []);
+
+    return (
+        <div className="min-h-screen text-white">
+            <ToastContainer />
+            {isInitialized && (
+                <>
+                    <AutoIncrement />
+                    <PointSynchronizer />
+                </>
+            )}
+            {renderCurrentView()}
+            {isInitialized && currentView !== 'loading' && (
+                <Navigation currentView={currentView} setCurrentView={setCurrentView} />
+            )}
+        </div>
+    );
+};
+
+export default ClickerPage;import React, { useState, useEffect, useCallback } from 'react';
+import { ToastContainer } from 'react-toastify';
+import LoadingScreen from '@/components/Loading';
+import Game from '@/components/Game';
+import Mine from '@/components/Mine';
+import Friends from '@/components/Friends';
+import Earn from '@/components/Earn';
+import Airdrop from '@/components/Airdrop';
+import Boost from '@/components/Boost';
+import Navigation from '@/components/Navigation';
+import { AutoIncrement } from '@/components/AutoIncrement';
+import { PointSynchronizer } from '@/components/PointSynchronizer';
+
+const ClickerPage: React.FC = () => {
+    const [currentView, setCurrentViewState] = useState<string>('loading');
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    const setCurrentView = useCallback((newView: string) => {
+        console.log('Changing view to:', newView);
+        setCurrentViewState(newView);
+    }, []);
+
+    const renderCurrentView = useCallback(() => {
+        if (!isInitialized) {
+            return <LoadingScreen setIsInitialized={setIsInitialized} setCurrentView={setCurrentView} />;
+        }
+
+        switch (currentView) {
+            case 'game':
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
+            case 'boost':
+                return <Boost currentView={currentView} setCurrentView={setCurrentView} />;
+            case 'mine':
+                return <Mine />;
+            case 'friends':
+                return <Friends />;
+            case 'earn':
+                return <Earn />;
+            case 'airdrop':
+                return <Airdrop />;
+            default:
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
+        }
+    }, [currentView, isInitialized]);
+
+    // Example of checking for window before using it
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            // Code that depends on the window object
+            console.log('Window is defined, running client-side code.');
+            // You can add any window-dependent code here
+        }
+    }, []);
+
+    return (
+        <div className="min-h-screen text-white">
+            <ToastContainer />
+            {isInitialized && (
+                <>
+                    <AutoIncrement />
+                    <PointSynchronizer />
+                </>
+            )}
+            {renderCurrentView()}
+            {isInitialized && currentView !== 'loading' && (
+                <Navigation currentView={currentView} setCurrentView={setCurrentView} />
+            )}
+        </div>
+    );
+};
+
+export default ClickerPage;
 yarn-error.log*
 
 # local env files
