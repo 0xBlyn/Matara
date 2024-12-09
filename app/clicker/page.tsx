@@ -62,6 +62,14 @@ function ClickerPage() {
 
     console.log('ClickerPage rendering. Current state:', { currentView, isInitialized });
 
+    // Example of checking for window before using it
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            // Any code that requires window can go here
+            console.log('Window is defined, running client-side code.');
+        }
+    }, []);
+
     return (
         <div className="min-h-screen text-white">
             <ToastContainer />
@@ -80,44 +88,5 @@ function ClickerPage() {
                 />
             )}
         </div>
-    );
-}
-
-interface ErrorBoundaryProps {
-    children: ReactNode;
-}
-
-interface ErrorBoundaryState {
-    hasError: boolean;
-}
-
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-    constructor(props: ErrorBoundaryProps) {
-        super(props);
-        this.state = { hasError: false };
-    }
-
-    static getDerivedStateFromError(_: Error): ErrorBoundaryState {
-        return { hasError: true };
-    }
-
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-        console.log('Error caught by boundary:', error, errorInfo);
-    }
-
-    render() {
-        if (this.state.hasError) {
-            return <h1>Something went wrong.</h1>;
-        }
-
-        return this.props.children;
-    }
-}
-
-export default function ClickerPageWithErrorBoundary() {
-    return (
-        <ErrorBoundary>
-            <ClickerPage />
-        </ErrorBoundary>
     );
 }
