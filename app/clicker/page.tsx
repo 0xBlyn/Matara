@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
 import React, { useState, useEffect, useCallback, ReactNode } from 'react';
-import dynamic from 'next/dynamic';
-import { ToastContainer } from 'react-toastify';
-import LoadingScreen from '@/components/Loading';
+import { createGameStore, InitialGameState } from '@/utils/game-mechaincs';
+import Game from '@/components/Game';
+import Mine from '@/components/Mine';
+import Friends from '@/components/Friends';
+import Earn from '@/components/Earn';
+import Airdrop from '@/components/Airdrop';
 import Navigation from '@/components/Navigation';
+import LoadingScreen from '@/components/Loading';
+import { energyUpgradeBaseBenefit } from '@/utils/consts';
+import Boost from '@/components/Boost';
+import { ToastContainer } from 'react-toastify';
 import { AutoIncrement } from '@/components/AutoIncrement';
 import { PointSynchronizer } from '@/components/PointSynchronizer';
-
-// Dynamically imported components to optimize performance
-const Game = dynamic(() => import('@/components/Game'), { ssr: false });
-const Mine = dynamic(() => import('@/components/Mine'), { ssr: false });
-const Friends = dynamic(() => import('@/components/Friends'), { ssr: false });
-const Earn = dynamic(() => import('@/components/Earn'), { ssr: false });
-const Airdrop = dynamic(() => import('@/components/Airdrop'), { ssr: false });
-const Boost = dynamic(() => import('@/components/Boost'), { ssr: false });
+import TopInfoSection from '@/components/TopInfoSection';
 
 function ClickerPage() {
     const [currentView, setCurrentViewState] = useState<string>('loading');
@@ -23,23 +23,27 @@ function ClickerPage() {
     const setCurrentView = useCallback((newView: string) => {
         console.log('Changing view to:', newView);
         setCurrentViewState(newView);
-    }, []);
+    }, [setCurrentViewState]);
 
     const renderCurrentView = useCallback(() => {
         if (!isInitialized) {
-            return (
-                <LoadingScreen
-                    setIsInitialized={setIsInitialized}
-                    setCurrentView={setCurrentView}
-                />
-            );
+            return <LoadingScreen
+                setIsInitialized={setIsInitialized}
+                setCurrentView={setCurrentView}
+            />;
         }
 
         switch (currentView) {
             case 'game':
-                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
+                return <Game
+                    currentView={currentView}
+                    setCurrentView={setCurrentView}
+                />;
             case 'boost':
-                return <Boost currentView={currentView} setCurrentView={setCurrentView} />;
+                return <Boost
+                    currentView={currentView}
+                    setCurrentView={setCurrentView}
+                />
             case 'mine':
                 return <Mine />;
             case 'friends':
@@ -49,44 +53,31 @@ function ClickerPage() {
             case 'airdrop':
                 return <Airdrop />;
             default:
-                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
+                return <Game
+                    currentView={currentView}
+                    setCurrentView={setCurrentView}
+                />;
         }
-    }, [currentView, isInitialized, setCurrentView]);
-
-    useEffect(() => {
-        // Safely check for window and set initialization
-        const canUseDOM = typeof window !== 'undefined' && typeof window.document !== 'undefined';
-        
-        if (canUseDOM) {
-            console.log('window object is accessible');
-            setIsInitialized(true);
-        }
-    }, []);
-
-    // Only render certain components client-side
-    const [isClient, setIsClient] = useState(false);
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
-
-    if (!isClient) {
-        return null;
-    }
+    }, [currentView, isInitialized]);
 
     console.log('ClickerPage rendering. Current state:', { currentView, isInitialized });
 
     return (
-        <div className="bg-black min-h-screen text-white">
+        <div className="min-h-screen text-white">
             <ToastContainer />
-            {isInitialized && (
+            {
+                isInitialized &&
                 <>
                     <AutoIncrement />
                     <PointSynchronizer />
                 </>
-            )}
+            }
             {renderCurrentView()}
             {isInitialized && currentView !== 'loading' && (
-                <Navigation currentView={currentView} setCurrentView={setCurrentView} />
+                <Navigation
+                    currentView={currentView}
+                    setCurrentView={setCurrentView}
+                />
             )}
         </div>
     );
