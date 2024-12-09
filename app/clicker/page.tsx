@@ -42,7 +42,7 @@ function ClickerPage() {
                 return <Boost
                     currentView={currentView}
                     setCurrentView={setCurrentView}
-                />
+                />;
             case 'mine':
                 return <Mine />;
             case 'friends':
@@ -58,6 +58,14 @@ function ClickerPage() {
                 />;
         }
     }, [currentView, isInitialized]);
+
+    // Wrap window-dependent logic with a client-side check
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            // Now you can safely access `window` here
+            console.log('window object is accessible');
+        }
+    }, []);
 
     console.log('ClickerPage rendering. Current state:', { currentView, isInitialized });
 
