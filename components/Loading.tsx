@@ -6,7 +6,6 @@ import { mainCharacter } from '@/images';
 import IceCube from '@/icons/IceCube';
 import { calculateEnergyLimit, calculateLevel, calculatePointsPerClick, calculateProfitPerHour, GameState, InitialGameState, useGameStore } from '@/utils/game-mechaincs';
 
-// Define the WebApp interface
 interface WebApp {
   ready: () => void;
   initData: string;
@@ -20,7 +19,6 @@ interface WebApp {
   };
 }
 
-// Declare the WebApp as a global variable
 declare global {
   interface Window {
     Telegram?: {
@@ -46,17 +44,16 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
     try {
       const WebApp = window.Telegram?.WebApp;
       if (!WebApp) {
-        throw new Error('Telegram WebApp is not available');
+        console.warn('Telegram WebApp is not available, using fallback data');
       }
 
-      WebApp.ready();
-      let initData = WebApp.initData;
-      const telegramId = WebApp.initDataUnsafe.user?.id.toString() ?? '';
-      const username = WebApp.initDataUnsafe.user?.username ?? 'Unknown User';
-      const telegramName = WebApp.initDataUnsafe.user?.first_name ?? 'Unknown User';
+      WebApp?.ready();
+      let initData = WebApp?.initData ?? 'fallback_init_data';
+      const telegramId = WebApp?.initDataUnsafe?.user?.id.toString() ?? 'fallback_id';
+      const username = WebApp?.initDataUnsafe?.user?.username ?? 'Unknown User';
+      const telegramName = WebApp?.initDataUnsafe?.user?.first_name ?? 'Unknown User';
 
-      // Extract referrer from start parameter
-      const startParam = new URLSearchParams(WebApp.initDataUnsafe.start_param ?? '').get('startapp');
+      const startParam = new URLSearchParams(WebApp?.initDataUnsafe?.start_param ?? '').get('startapp');
       const referrerTelegramId = startParam ? startParam.replace('kentId', '') : null;
 
       if (process.env.NEXT_PUBLIC_BYPASS_TELEGRAM_AUTH === 'true') {
@@ -74,7 +71,6 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
 
       console.log("user data: ", userData);
 
-      // Create the game store with fetched data
       const initialState: InitialGameState = {
         userTelegramInitData: initData,
         userTelegramName: telegramName,
@@ -121,6 +117,7 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
       const remainingTime = Math.max(3000 - elapsedTime, 0);
 
       const timer = setTimeout(() => {
+        console.log("Loading complete, transitioning to game view");
         setCurrentView('game');
         setIsInitialized(true);
       }, remainingTime);
@@ -130,7 +127,7 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
   }, [isDataLoaded, setCurrentView, setIsInitialized]);
 
   if (!isMounted) {
-    return null; // or a loading indicator
+    return null;
   }
 
   return (

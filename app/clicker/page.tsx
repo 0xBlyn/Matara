@@ -6,7 +6,6 @@ import LoadingScreen from '@/components/Loading';
 import Game from '@/components/Game';
 import Navigation from '@/components/Navigation';
 
-// Dynamically import components that might use browser-only APIs
 const Mine = dynamic(() => import('@/components/Mine'), { ssr: false });
 const Friends = dynamic(() => import('@/components/Friends'), { ssr: false });
 const Earn = dynamic(() => import('@/components/Earn'), { ssr: false });
@@ -31,6 +30,7 @@ const ClickerPage: React.FC = () => {
     }, []);
 
     const renderCurrentView = useCallback(() => {
+        console.log('Rendering current view:', currentView, 'Initialized:', isInitialized);
         if (!isInitialized) {
             return <LoadingScreen setIsInitialized={setIsInitialized} setCurrentView={setCurrentView} />;
         }
@@ -51,10 +51,10 @@ const ClickerPage: React.FC = () => {
             default:
                 return <Game currentView={currentView} setCurrentView={setCurrentView} />;
         }
-    }, [currentView, isInitialized]);
+    }, [currentView, isInitialized, setCurrentView]);
 
     if (!isMounted) {
-        return null; // or a loading indicator
+        return null;
     }
 
     return (
