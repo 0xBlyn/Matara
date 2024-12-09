@@ -1,19 +1,20 @@
-'use client'
+"use client";
 
 import React, { useState, useEffect, useCallback, ReactNode } from 'react';
-import { createGameStore, InitialGameState } from '@/utils/game-mechaincs';
-import Game from '@/components/Game';
-import Mine from '@/components/Mine';
-import Friends from '@/components/Friends';
-import Earn from '@/components/Earn';
-import Airdrop from '@/components/Airdrop';
-import Navigation from '@/components/Navigation';
-import LoadingScreen from '@/components/Loading';
-import { energyUpgradeBaseBenefit } from '@/utils/consts';
-import Boost from '@/components/Boost';
+import dynamic from 'next/dynamic';
 import { ToastContainer } from 'react-toastify';
+import LoadingScreen from '@/components/Loading';
+import Navigation from '@/components/Navigation';
 import { AutoIncrement } from '@/components/AutoIncrement';
 import { PointSynchronizer } from '@/components/PointSynchronizer';
+
+// Dynamically imported components to optimize performance
+const Game = dynamic(() => import('@/components/Game'));
+const Mine = dynamic(() => import('@/components/Mine'));
+const Friends = dynamic(() => import('@/components/Friends'));
+const Earn = dynamic(() => import('@/components/Earn'));
+const Airdrop = dynamic(() => import('@/components/Airdrop'));
+const Boost = dynamic(() => import('@/components/Boost'));
 
 function ClickerPage() {
     const [currentView, setCurrentViewState] = useState<string>('loading');
@@ -26,23 +27,19 @@ function ClickerPage() {
 
     const renderCurrentView = useCallback(() => {
         if (!isInitialized) {
-            return <LoadingScreen
-                setIsInitialized={setIsInitialized}
-                setCurrentView={setCurrentView}
-            />;
+            return (
+                <LoadingScreen
+                    setIsInitialized={setIsInitialized}
+                    setCurrentView={setCurrentView}
+                />
+            );
         }
 
         switch (currentView) {
             case 'game':
-                return <Game
-                    currentView={currentView}
-                    setCurrentView={setCurrentView}
-                />;
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
             case 'boost':
-                return <Boost
-                    currentView={currentView}
-                    setCurrentView={setCurrentView}
-                />;
+                return <Boost currentView={currentView} setCurrentView={setCurrentView} />;
             case 'mine':
                 return <Mine />;
             case 'friends':
@@ -52,17 +49,12 @@ function ClickerPage() {
             case 'airdrop':
                 return <Airdrop />;
             default:
-                return <Game
-                    currentView={currentView}
-                    setCurrentView={setCurrentView}
-                />;
+                return <Game currentView={currentView} setCurrentView={setCurrentView} />;
         }
     }, [currentView, isInitialized]);
 
-    // Wrap window-dependent logic with a client-side check
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            // Now you can safely access `window` here
             console.log('window object is accessible');
         }
     }, []);
@@ -72,19 +64,15 @@ function ClickerPage() {
     return (
         <div className="bg-black min-h-screen text-white">
             <ToastContainer />
-            {
-                isInitialized &&
+            {isInitialized && (
                 <>
                     <AutoIncrement />
                     <PointSynchronizer />
                 </>
-            }
+            )}
             {renderCurrentView()}
             {isInitialized && currentView !== 'loading' && (
-                <Navigation
-                    currentView={currentView}
-                    setCurrentView={setCurrentView}
-                />
+                <Navigation currentView={currentView} setCurrentView={setCurrentView} />
             )}
         </div>
     );
