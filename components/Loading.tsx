@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { mainCharacter } from '@/images';
 import IceCube from '@/icons/IceCube';
@@ -17,7 +17,7 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const openTimestampRef = useRef(Date.now());
 
-  const fetchOrCreateUser = async () => {
+  const fetchOrCreateUser = useCallback(async () => {
     try {
       WebApp.ready();
       let initData = WebApp.initData;
@@ -72,11 +72,11 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
       console.error('Error fetching user data:', error);
       // Handle error (e.g., show error message to user)
     }
-  };
+  }, [initializeState]);
 
   useEffect(() => {
     fetchOrCreateUser();
-  }, []);
+  }, [fetchOrCreateUser]);
 
   useEffect(() => {
     if (isDataLoaded) {
@@ -91,7 +91,7 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
 
       return () => clearTimeout(timer);
     }
-  }, [isDataLoaded, setIsInitialized]);
+  }, [isDataLoaded, setCurrentView, setIsInitialized]);
 
   return (
     <div className="bg-[#1d2025] flex justify-center items-center h-screen">

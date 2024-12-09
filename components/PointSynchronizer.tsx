@@ -1,4 +1,3 @@
-// components/PointSynchronizer.tsx
 'use client'
 
 import { useEffect, useCallback, useRef } from 'react';
@@ -42,6 +41,7 @@ export function PointSynchronizer() {
             console.log("Data from server: ", data);
             const updatedUnsynchronizedPoints = Math.max(0, unsynchronizedPoints - frozenPointsToSynchronized);
 
+            // Commented out initialization update as suggested
             // initializeState({
             //     points: data.points,
             //     pointsBalance: data.pointsBalance,
@@ -53,7 +53,7 @@ export function PointSynchronizer() {
             showErrorMessage('Error syncing with server:');
             console.error('Error syncing with server:', error);
         }
-    }, [userTelegramInitData, unsynchronizedPoints, energy, initializeState]);
+    }, [userTelegramInitData, unsynchronizedPoints, energy]); // Removed initializeState from dependencies
 
     useEffect(() => {
         // Clear any existing timeout
