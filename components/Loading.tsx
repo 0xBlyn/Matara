@@ -35,6 +35,7 @@ interface LoadingProps {
 export default function Loading({ setIsInitialized, setCurrentView }: LoadingProps) {
   const initializeState = useGameStore((state: GameState) => state.initializeState);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const openTimestampRef = useRef(Date.now());
   const [isMounted, setIsMounted] = useState(false);
 
@@ -69,7 +70,7 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
       }
       const userData = await response.json();
 
-      console.log("user data: ", userData);
+      console.log("User data fetched successfully:", userData);
 
       const initialState: InitialGameState = {
         userTelegramInitData: initData,
@@ -90,13 +91,13 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
         profitPerHour: calculateProfitPerHour(userData.mineLevelIndex)
       };
 
-      console.log("Initial state: ", initialState);
+      console.log("Initial state created:", initialState);
 
       initializeState(initialState);
       setIsDataLoaded(true);
     } catch (error) {
       console.error('Error fetching user data:', error);
-      // Handle error (e.g., show error message to user)
+      setError('Failed to load user data. Please try again.');
     }
   }, [initializeState, isMounted]);
 
@@ -109,6 +110,17 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
       fetchOrCreateUser();
     }
   }, [fetchOrCreateUser, isMounted]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isDataLoaded && !error) {
+        console.log("Loading timeout reached");
+        setError('Loading took too long. Please check your connection and try again.');
+      }
+    }, 30000); // 30 seconds timeout
+
+    return () => clearTimeout(timer);
+  }, [isDataLoaded, error]);
 
   useEffect(() => {
     if (isDataLoaded) {
@@ -128,6 +140,23 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
 
   if (!isMounted) {
     return null;
+  }
+
+  if (error) {
+    return (
+      <div className="bg-[#1d2025] flex justify-center items-center h-screen">
+        <div className="w-full max-w-xl text-white flex flex-col items-center">
+          <h1 className="text-3xl font-bold mb-4">Error</h1>
+          <p className="text-center mb-4">{error}</p>
+          <button 
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
