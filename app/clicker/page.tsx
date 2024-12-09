@@ -1,4 +1,5 @@
 // app/clicker/page.tsx
+'use client'
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { ToastContainer } from 'react-toastify';
