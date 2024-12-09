@@ -1,25 +1,33 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { ToastContainer } from 'react-toastify';
+import dynamic from 'next/dynamic';
 import LoadingScreen from '@/components/Loading';
 import Game from '@/components/Game';
-import Mine from '@/components/Mine';
-import Friends from '@/components/Friends';
-import Earn from '@/components/Earn';
-import Airdrop from '@/components/Airdrop';
-import Boost from '@/components/Boost';
 import Navigation from '@/components/Navigation';
-import { AutoIncrement } from '@/components/AutoIncrement';
-import { PointSynchronizer } from '@/components/PointSynchronizer';
+
+// Dynamically import components that might use browser-only APIs
+const Mine = dynamic(() => import('@/components/Mine'), { ssr: false });
+const Friends = dynamic(() => import('@/components/Friends'), { ssr: false });
+const Earn = dynamic(() => import('@/components/Earn'), { ssr: false });
+const Airdrop = dynamic(() => import('@/components/Airdrop'), { ssr: false });
+const Boost = dynamic(() => import('@/components/Boost'), { ssr: false });
+const ToastContainer = dynamic(() => import('react-toastify').then(mod => mod.ToastContainer), { ssr: false });
+const AutoIncrement = dynamic(() => import('@/components/AutoIncrement').then(mod => mod.AutoIncrement), { ssr: false });
+const PointSynchronizer = dynamic(() => import('@/components/PointSynchronizer').then(mod => mod.PointSynchronizer), { ssr: false });
 
 const ClickerPage: React.FC = () => {
     const [currentView, setCurrentViewState] = useState<string>('loading');
     const [isInitialized, setIsInitialized] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     const setCurrentView = useCallback((newView: string) => {
         console.log('Changing view to:', newView);
         setCurrentViewState(newView);
+    }, []);
+
+    useEffect(() => {
+        setIsMounted(true);
     }, []);
 
     const renderCurrentView = useCallback(() => {
@@ -45,23 +53,20 @@ const ClickerPage: React.FC = () => {
         }
     }, [currentView, isInitialized]);
 
-    // Example of checking for window before using it
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            console.log('Window is defined, running client-side code.');
-            // You can add any window-dependent code here
-        }
-    }, []);
+    if (!isMounted) {
+        return null; // or a loading indicator
+    }
 
     return (
         <div className="min-h-screen text-white">
-            <ToastContainer />
-            {isInitialized && (
+            {isMounted && <ToastContainer />}
+            {isInitialized && isMounted && (
                 <>
                     <AutoIncrement />
                     <PointSynchronizer />
                 </>
             )}
+
             {renderCurrentView()}
             {isInitialized && currentView !== 'loading' && (
                 <Navigation currentView={currentView} setCurrentView={setCurrentView} />
@@ -71,3 +76,4 @@ const ClickerPage: React.FC = () => {
 };
 
 export default ClickerPage;
+
