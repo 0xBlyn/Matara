@@ -9,12 +9,12 @@ import { AutoIncrement } from '@/components/AutoIncrement';
 import { PointSynchronizer } from '@/components/PointSynchronizer';
 
 // Dynamically imported components to optimize performance
-const Game = dynamic(() => import('@/components/Game'));
-const Mine = dynamic(() => import('@/components/Mine'));
-const Friends = dynamic(() => import('@/components/Friends'));
-const Earn = dynamic(() => import('@/components/Earn'));
-const Airdrop = dynamic(() => import('@/components/Airdrop'));
-const Boost = dynamic(() => import('@/components/Boost'));
+const Game = dynamic(() => import('@/components/Game'), { ssr: false });
+const Mine = dynamic(() => import('@/components/Mine'), { ssr: false });
+const Friends = dynamic(() => import('@/components/Friends'), { ssr: false });
+const Earn = dynamic(() => import('@/components/Earn'), { ssr: false });
+const Airdrop = dynamic(() => import('@/components/Airdrop'), { ssr: false });
+const Boost = dynamic(() => import('@/components/Boost'), { ssr: false });
 
 function ClickerPage() {
     const [currentView, setCurrentViewState] = useState<string>('loading');
@@ -51,16 +51,27 @@ function ClickerPage() {
             default:
                 return <Game currentView={currentView} setCurrentView={setCurrentView} />;
         }
-    }, [currentView, isInitialized]);
+    }, [currentView, isInitialized, setCurrentView]);
 
     useEffect(() => {
-        // This code will only run in the browser
-        if (typeof window !== 'undefined') {
+        // Safely check for window and set initialization
+        const canUseDOM = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+        
+        if (canUseDOM) {
             console.log('window object is accessible');
-            // Any other code that needs to run in the browser can go here
-            setIsInitialized(true); // Example of setting initialization state
+            setIsInitialized(true);
         }
     }, []);
+
+    // Only render certain components client-side
+    const [isClient, setIsClient] = useState(false);
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    if (!isClient) {
+        return null;
+    }
 
     console.log('ClickerPage rendering. Current state:', { currentView, isInitialized });
 
