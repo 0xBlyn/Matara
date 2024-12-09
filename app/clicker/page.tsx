@@ -56,6 +56,7 @@ function ClickerPage() {
     useEffect(() => {
         if (typeof window !== 'undefined') {
             console.log('window object is accessible');
+            // Any other code that needs to run in the browser can go here
         }
     }, []);
 
