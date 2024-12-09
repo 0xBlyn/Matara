@@ -5,7 +5,29 @@ import Image from 'next/image';
 import { mainCharacter } from '@/images';
 import IceCube from '@/icons/IceCube';
 import { calculateEnergyLimit, calculateLevel, calculatePointsPerClick, calculateProfitPerHour, GameState, InitialGameState, useGameStore } from '@/utils/game-mechaincs';
-import WebApp from '@twa-dev/sdk';
+
+// Define the WebApp interface
+interface WebApp {
+  ready: () => void;
+  initData: string;
+  initDataUnsafe: {
+    user?: {
+      id: number;
+      username?: string;
+      first_name?: string;
+    };
+    start_param?: string;
+  };
+}
+
+// Declare the WebApp as a global variable
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp: WebApp;
+    };
+  }
+}
 
 interface LoadingProps {
   setIsInitialized: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,17 +38,25 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
   const initializeState = useGameStore((state: GameState) => state.initializeState);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const openTimestampRef = useRef(Date.now());
+  const [isMounted, setIsMounted] = useState(false);
 
   const fetchOrCreateUser = useCallback(async () => {
+    if (!isMounted || typeof window === 'undefined') return;
+
     try {
+      const WebApp = window.Telegram?.WebApp;
+      if (!WebApp) {
+        throw new Error('Telegram WebApp is not available');
+      }
+
       WebApp.ready();
       let initData = WebApp.initData;
-      const telegramId = WebApp.initDataUnsafe.user?.id.toString();
-      const username = WebApp.initDataUnsafe.user?.username || 'Unknown User';
-      const telegramName = WebApp.initDataUnsafe.user?.first_name || 'Unknown User';
+      const telegramId = WebApp.initDataUnsafe.user?.id.toString() ?? '';
+      const username = WebApp.initDataUnsafe.user?.username ?? 'Unknown User';
+      const telegramName = WebApp.initDataUnsafe.user?.first_name ?? 'Unknown User';
 
       // Extract referrer from start parameter
-      const startParam = new URLSearchParams(WebApp.initDataUnsafe.start_param || '').get('startapp');
+      const startParam = new URLSearchParams(WebApp.initDataUnsafe.start_param ?? '').get('startapp');
       const referrerTelegramId = startParam ? startParam.replace('kentId', '') : null;
 
       if (process.env.NEXT_PUBLIC_BYPASS_TELEGRAM_AUTH === 'true') {
@@ -72,11 +102,17 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
       console.error('Error fetching user data:', error);
       // Handle error (e.g., show error message to user)
     }
-  }, [initializeState]);
+  }, [initializeState, isMounted]);
 
   useEffect(() => {
-    fetchOrCreateUser();
-  }, [fetchOrCreateUser]);
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      fetchOrCreateUser();
+    }
+  }, [fetchOrCreateUser, isMounted]);
 
   useEffect(() => {
     if (isDataLoaded) {
@@ -92,6 +128,10 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
       return () => clearTimeout(timer);
     }
   }, [isDataLoaded, setCurrentView, setIsInitialized]);
+
+  if (!isMounted) {
+    return null; // or a loading indicator
+  }
 
   return (
     <div className="bg-[#1d2025] flex justify-center items-center h-screen">
@@ -122,3 +162,4 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
     </div>
   );
 }
+
